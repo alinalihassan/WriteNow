@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+dist
+dist
+WriteNow-win32-x64/
+
+npm-debug\.log
+WriteNow-win32-x64

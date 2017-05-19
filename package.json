@@ -1,0 +1,38 @@
+{
+  "name": "WriteNow",
+  "version": "1.4.1",
+  "description": "A minimalist app for writing",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "stop": "taskkill /im node.exe /f",
+    "dist": "build -w"
+  },
+  "author": "Hassan Alin Ali <hassanalinali@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/alin_hassan/notes"
+  },
+  "private": true,
+  "dependencies": {
+    "electron-editor-context-menu": "1.1.1",
+    "electron-titlebar-windows": "^2.1.0",
+    "electron-updater": "^1.15.0",
+    "electron-window-state": "4.1.1",
+    "jquery": "2.2.4"
+  },
+  "devDependencies": {
+    "electron-builder": "17.8.0",
+    "electron": "1.6.8"
+  },
+  "build": {
+    "appId": "com.hassanalinali.writenow",
+    "productName": "WriteNow",
+    "publish": [{
+             "provider": "github",
+             "owner": "hassanalinali",
+             "repo": "WriteNow"
+         }],
+
+  }
+}

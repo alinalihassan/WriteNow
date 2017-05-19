@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+
+	<head>
+
+		<!-- MISC/META -->
+		<title> WriteNow </title>
+        <meta charset="utf-8">
+		<meta name="description" content="Notes - A minimal text editor, made to stay out of the way while you get the words down.">
+
+
+		<!-- CSS -->
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/fonts.css" rel="stylesheet">
+
+        <!-- LIBS -->
+        <script src="js/libs/slideout.min.js"></script>
+
+		<!-- JS -->
+		<script src="js/utils.js"></script>
+		<script src="js/editor.js"></script>
+		<script src="js/ui.js"></script>
+
+    </head>
+
+	<body class="light-mode">
+
+        <nav id="menu">
+            <div id="notes-menu"></div>
+            <div class="menu-plus">+ Add Note</div>
+        </nav>
+
+        <main id="panel">
+            <div class="text-options">
+                <div class="options">
+                    <span class="no-overflow">
+                        <span class="lengthen ui-inputs">
+                            <button class="url useicons">&#xe903;</button>
+                            <input class="url-input" type="text" placeholder="Type or Paste URL here"/>
+                            <button class="sup useicons">&#xe910;</button>
+                            <button class="bold useicons">&#xe912;</button>
+                            <button class="italic useicons">&#xe914;</button>
+                            <button class="under useicons">&#xe913;</button>
+                            <button class="strike useicons">&#xe915;</button>
+                            <button class="sub useicons">&#xe911;</button>
+                        </span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="ui">
+
+                <div class="wrapper">
+
+                    <div class="top editing">
+                        <button class="menu-toggle useicons" title="Toggle menu">
+                            &#xe909;
+                        </button>
+                        <button class="fullscreen useicons" title="Toggle fullscreen">
+                            &#xe901;
+                        </button>
+
+                        <button class="color-flip useicons" title="Invert colors">
+                            &#xe902;
+                        </button>
+
+                        <button class="print useicons" title="Print">
+                            &#xe900;
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="characters-count">
+                </div>
+
+                <div class="words-count">
+                </div>
+            </div>
+
+            <section>
+
+                <header contenteditable="true" class="header">
+                    This is WriteNow
+                </header>
+
+                <article contenteditable="true" class="content">
+
+                    <p>
+                        A minimalist writing zone, where you can block out all distractions and get to what's important. The writing!
+                    </p>
+
+                    <p>
+                        To get started, all you need to do is delete this text (seriously, just highlight it and hit delete), and fill the page with your own fantastic words. You can even change the title!
+                    </p>
+
+                    <p>
+                        You can use <b>bold</b>, <i>italics</i>, <u>underline</u>, <strike>strikethrough</strike>, H<sub>2</sub>O, x<sup>2</sup> and even <b><u><strike><i>all of them</i></strike></u></b> and <a href="http://www.google.com"> urls </a> just by highlighting the text and selecting them from the tiny options box that appears above it or using the shortcuts (Ctrl + action's initial character).
+                    </p>
+
+                    <p>Happy Typing! ~ <b>Hassan Alin Ali</b></p>
+
+                </article>
+
+            </section>
+
+        </main>
+
+		<!-- JS -->
+		<script type="text/javascript">
+
+			//Initiate the side panel
+            $(document).ready(function() {
+                $('#panel').show();
+            });
+            var slideout = new Slideout({
+                'panel': document.getElementById('panel'),
+                'menu': document.getElementById('menu'),
+                'padding': 300,
+                'tolerance': 70
+            });
+
+			//Initiate the UI and editor files
+	        Global.editor.init();
+	    	Global.ui.init();
+
+			//Initiate the context menu
+			var remote = require('electron').remote;
+			// `remote.require` since `Menu` is a main-process module.
+			var buildEditorContextMenu = remote.require('electron-editor-context-menu');
+
+			window.addEventListener('contextmenu', function(e) {
+			// Only show the context menu in text editors.
+			if (!e.target.closest('textarea, input, [contenteditable="true"]')) return;
+
+            var contextMenu = [{
+                label: 'Undo',
+                role: 'undo'
+                }, {
+                label: 'Redo',
+                role: 'redo'
+                }, {
+                type: 'separator'
+                }, {
+                label: 'Cut',
+                role: 'cut'
+                }, {
+                label: 'Copy',
+                role: 'copy'
+                }, {
+                label: 'Paste',
+                role: 'paste'
+                }, {
+                label: 'Select All',
+                role: 'selectall'
+            }];
+
+            var menu = buildEditorContextMenu(false, contextMenu);
+
+            // The 'contextmenu' event is emitted after 'selectionchange' has fired but possibly before the
+            // visible selection has changed. Try to wait to show the menu until after that, otherwise the
+            // visible selection will update after the menu dismisses and look weird.
+            setTimeout(function() {
+                menu.popup(remote.getCurrentWindow());
+                }, 30);
+			});
+
+        </script>
+	</body>
+</html>
