@@ -104,7 +104,19 @@ autoUpdater.on('download-progress', (progressObj) => {
 
 autoUpdater.on('update-downloaded', (ev, info) => {
   sendStatusToWindow('Update downloaded; will install in 5 seconds');
-  autoUpdater.quitAndInstall();
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Install Updates',
+    message: 'Updates are available to the app, install the update now?',
+    buttons: ['Yes', 'No']
+  }, (buttonIndex) => {
+    if (buttonIndex === 0) {
+      autoUpdater.quitAndInstall();
+    } 
+    else {
+      
+    }
+
 });
 
 // This method will be called when Electron has finished
