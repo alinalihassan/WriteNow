@@ -114,8 +114,9 @@ autoUpdater.on('update-downloaded', (ev, info) => {
       autoUpdater.quitAndInstall();
     } 
     else {
-      
+
     }
+  });
 
 });
 
