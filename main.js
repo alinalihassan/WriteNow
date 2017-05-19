@@ -5,10 +5,20 @@ const electron = require('electron');
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
+const autoUpdater = require("electron-updater").autoUpdater
+const log = require('electron-log');
+const isDev = require('electron-is-dev');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+
+log.info('App starting...');
+
 
 const windowStateKeeper = require('electron-window-state');
 
@@ -49,7 +59,7 @@ function createWindow () {
     // and load the index.html of the app.
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
-    // mainWindow.toggleDevTools();
+    mainWindow.toggleDevTools();
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
@@ -60,9 +70,46 @@ function createWindow () {
 
 }
 
+function onReady() {
+  createWindow();
+  autoUpdater.checkForUpdates();
+}
+
+function sendStatusToWindow(text) {
+  log.info(text);
+  mainWindow.webContents.send('message', text);
+}
+
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+})
+
+autoUpdater.on('update-available', (ev, info) => {
+  sendStatusToWindow('Update available.');
+})
+
+autoUpdater.on('update-not-available', (ev, info) => {
+  sendStatusToWindow('Update not available.');
+})
+
+autoUpdater.on('error', (ev, err) => {
+  sendStatusToWindow('Error in auto-updater.');
+})
+
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  sendStatusToWindow(log_message);
+})
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+  sendStatusToWindow('Update downloaded; will install in 5 seconds');
+});
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
-app.on('ready', createWindow);
+app.on('ready', onReady);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
