@@ -17,8 +17,6 @@ let mainWindow;
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 
-log.info('App starting...');
-
 
 const windowStateKeeper = require('electron-window-state');
 
@@ -72,7 +70,8 @@ function createWindow () {
 
 function onReady() {
   createWindow();
-  autoUpdater.checkForUpdates();
+  if(!isDev)
+    autoUpdater.checkForUpdates();
 }
 
 function sendStatusToWindow(text) {
@@ -105,6 +104,7 @@ autoUpdater.on('download-progress', (progressObj) => {
 
 autoUpdater.on('update-downloaded', (ev, info) => {
   sendStatusToWindow('Update downloaded; will install in 5 seconds');
+  autoUpdater.quitAndInstall();
 });
 
 // This method will be called when Electron has finished
